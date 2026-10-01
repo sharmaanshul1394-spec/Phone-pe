@@ -1,0 +1,23 @@
+{
+"name": "PayDemo - Simulation App",
+"short_name": "PayDemo",
+"description": "Demo payment simulation app. No real transactions.",
+"start_url": "/Phone-pe/",
+"scope": "/Phone-pe/",
+"display": "standalone",
+"orientation": "portrait",
+"background_color": "#f5f7fb",
+"theme_color": "#6739b7",
+"icons": [
+{
+"src": "icon-192.png",
+"sizes": "192x192",
+"type": "image/png"
+},
+{
+"src": "icon-512.png",
+"sizes": "512x512",
+"type": "image/png"
+}
+]
+}
