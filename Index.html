@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PayDemo - Demo Payment App</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Arial,sans-serif;
+}
+
+body{
+  background:#111;
+  color:#222;
+}
+
+.app{
+  max-width:480px;
+  min-height:100vh;
+  margin:auto;
+  background:#f5f7fb;
+}
+
+header{
+  background:#6739b7;
+  color:white;
+  padding:22px 18px;
+  border-radius:0 0 25px 25px;
+}
+
+.header-title{
+  font-size:25px;
+  font-weight:bold;
+}
+
+.demo-label{
+  display:inline-block;
+  margin-top:8px;
+  background:#ffd84d;
+  color:#432900;
+  padding:5px 10px;
+  border-radius:20px;
+  font-size:11px;
+  font-weight:bold;
+}
+
+.balance{
+  margin-top:22px;
+  background:white;
+  color:#333;
+  padding:18px;
+  border-radius:18px;
+}
+
+.balance small{
+  color:#777;
+}
+
+.balance h1{
+  margin-top:6px;
+  color:#6739b7;
+}
+
+.container{
+  padding:18px;
+}
+
+.card{
+  background:white;
+  padding:18px;
+  border-radius:18px;
+  margin-bottom:15px;
+  box-shadow:0 5px 15px #00000010;
+}
+
+.card h2{
+  font-size:19px;
+  margin-bottom:15px;
+}
+
+input{
+  width:100%;
+  padding:13px;
+  margin-bottom:10px;
+  border:1px solid #ddd;
+  border-radius:11px;
+  font-size:15px;
+}
+
+button{
+  border:0;
+  border-radius:11px;
+  padding:13px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.pay-btn{
+  width:100%;
+  background:#6739b7;
+  color:white;
+}
+
+.qr-box{
+  text-align:center;
+}
+
+.qr-box img{
+  width:220px;
+  max-width:100%;
+  border-radius:12px;
+  margin:10px auto;
+  display:block;
+}
+
+.demo-warning{
+  background:#fff1c7;
+  color:#765500;
+  padding:12px;
+  border-radius:12px;
+  font-size:12px;
+  line-height:1.5;
+  margin-top:10px;
+}
+
+.history-item{
+  padding:13px 0;
+  border-bottom:1px solid #eee;
+}
+
+.history-item:last-child{
+  border-bottom:0;
+}
+
+.history-name{
+  font-weight:bold;
+}
+
+.history-info{
+  font-size:11px;
+  color:#777;
+  margin-top:4px;
+}
+
+.history-amount{
+  color:#d33;
+  font-weight:bold;
+  margin-top:5px;
+}
+
+.empty{
+  color:#888;
+  font-size:13px;
+  text-align:center;
+  padding:15px;
+}
+
+.screen-btn{
+  width:100%;
+  background:#222;
+  color:white;
+  margin-top:10px;
+}
+
+.clear-btn{
+  width:100%;
+  background:#eee;
+  color:#444;
+  margin-top:10px;
+}
+
+footer{
+  text-align:center;
+  padding:20px;
+  font-size:11px;
+  color:#777;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+
+  <div class="header-title">PayDemo</div>
+
+  <div class="demo-label">
+    DEMO / SIMULATION ONLY
+  </div>
+
+  <div class="balance">
+    <small>Demo Balance</small>
+    <h1>₹<span id="balance">5000</span></h1>
+  </div>
+
+</header>
+
+
+<div class="container">
+
+  <!-- PAYMENT -->
+  <div class="card">
+
+    <h2>📤 Demo Payment</h2>
+
+    <input
+      id="receiver"
+      type="text"
+      placeholder="नाम या मोबाइल नंबर"
+    >
+
+    <input
+      id="amount"
+      type="number"
+      placeholder="राशि ₹"
+      min="1"
+    >
+
+    <button
+      class="pay-btn"
+      onclick="makePayment()"
+    >
+      Pay Demo
+    </button>
+
+    <div class="demo-warning">
+      ⚠️ यह केवल simulation है।
+      कोई वास्तविक बैंक, UPI या payment नहीं होगी।
+    </div>
+
+  </div>
+
+
+  <!-- QR -->
+  <div class="card qr-box">
+
+    <h2>📱 Demo QR</h2>
+
+    <!-- अपनी QR फोटो का नाम qr.jpg रखना -->
+    <img src="qr.jpg" alt="Demo QR">
+
+    <div class="demo-warning">
+      DEMO QR — NOT REAL PAYMENT
+      <br>
+      यह QR केवल demonstration के लिए है।
+    </div>
+
+  </div>
+
+
+  <!-- HISTORY -->
+  <div class="card">
+
+    <h2>📜 Demo Payment History</h2>
+
+    <div id="history"></div>
+
+    <button
+      class="clear-btn"
+      onclick="clearHistory()"
+    >
+      Clear Demo History
+    </button>
+
+  </div>
+
+
+  <!-- SCREEN SHARE -->
+  <div class="card">
+
+    <h2>📸 Screen Share</h2>
+
+    <p style="font-size:12px;color:#777;margin-bottom:10px;">
+      Screen sharing तभी शुरू होगी जब user खुद permission देगा।
+    </p>
+
+    <button
+      class="screen-btn"
+      onclick="startScreenShare()"
+    >
+      📸 Share Screen
+    </button>
+
+  </div>
+
+</div>
+
+
+<footer>
+  PayDemo © 2026
+  <br>
+  DEMO APP — NO REAL MONEY
+</footer>
+
+</div>
+
+
+<script>
+
+let balance = Number(localStorage.getItem("demoBalance"));
+
+if(isNaN(balance)){
+  balance = 5000;
+  localStorage.setItem("demoBalance", balance);
+}
+
+document.getElementById("balance").textContent = balance;
+
+
+function makePayment(){
+
+  const receiver =
+    document.getElementById("receiver").value.trim();
+
+  const amount =
+    Number(document.getElementById("amount").value);
+
+  if(!receiver){
+    alert("पहले नाम या मोबाइल नंबर डालो।");
+    return;
+  }
+
+  if(!amount || amount <= 0){
+    alert("सही राशि डालो।");
+    return;
+  }
+
+  if(amount > balance){
+    alert("Demo balance कम है।");
+    return;
+  }
+
+
+  balance -= amount;
+
+  localStorage.setItem(
+    "demoBalance",
+    balance
+  );
+
+
+  const transaction = {
+
+    id:
+      "DEMO-" +
+      Date.now(),
+
+    receiver:
+      receiver,
+
+    amount:
+      amount,
+
+    date:
+      new Date().toLocaleString("hi-IN")
+
+  };
+
+
+  let history =
+    JSON.parse(
+      localStorage.getItem("demoHistory") || "[]"
+    );
+
+
+  history.unshift(transaction);
+
+
+  localStorage.setItem(
+    "demoHistory",
+    JSON.stringify(history)
+  );
+
+
+  document.getElementById("balance").textContent =
+    balance;
+
+
+  document.getElementById("receiver").value = "";
+
+  document.getElementById("amount").value = "";
+
+
+  showHistory();
+
+
+  alert(
+    "DEMO PAYMENT SUCCESSFUL\n\n" +
+    "Receiver: " + receiver +
+    "\nAmount: ₹" + amount +
+    "\n\nयह वास्तविक payment नहीं है।"
+  );
+
+}
+
+
+function showHistory(){
+
+  const box =
+    document.getElementById("history");
+
+
+  let history =
+    JSON.parse(
+      localStorage.getItem("demoHistory") || "[]"
+    );
+
+
+  if(history.length === 0){
+
+    box.innerHTML =
+      '<div class="empty">अभी कोई demo payment नहीं हुई।</div>';
+
+    return;
+  }
+
+
+  box.innerHTML = "";
+
+
+  history.forEach(item => {
+
+    const div =
+      document.createElement("div");
+
+    div.className =
+      "history-item";
+
+
+    div.innerHTML = `
+
+      <div class="history-name">
+        📤 ${escapeHTML(item.receiver)}
+      </div>
+
+      <div class="history-info">
+        ${item.date}
+      </div>
+
+      <div class="history-info">
+        Transaction ID: ${item.id}
+      </div>
+
+      <div class="history-amount">
+        - ₹${item.amount}
+      </div>
+
+    `;
+
+
+    box.appendChild(div);
+
+  });
+
+}
+
+
+function clearHistory(){
+
+  localStorage.removeItem("demoHistory");
+
+  showHistory();
+
+}
+
+
+function escapeHTML(text){
+
+  const div =
+    document.createElement("div");
+
+  div.textContent = text;
+
+  return div.innerHTML;
+
+}
+
+
+/*
+  Screen sharing:
+  Browser user से permission मांगता है।
+  बिना permission screen capture नहीं होगा.
+*/
+
+async function startScreenShare(){
+
+  if(!navigator.mediaDevices ||
+     !navigator.mediaDevices.getDisplayMedia){
+
+    alert(
+      "इस browser में screen sharing उपलब्ध नहीं है।"
+    );
+
+    return;
+  }
+
+
+  try{
+
+    const stream =
+      await navigator.mediaDevices.getDisplayMedia({
+        video:true
+      });
+
+
+    alert(
+      "Screen sharing शुरू हो गई है।\n\n" +
+      "यह केवल user की permission से शुरू हुई है।"
+    );
+
+
+    stream.getVideoTracks()[0].addEventListener(
+      "ended",
+      () => {
+
+        alert(
+          "Screen sharing बंद हो गई।"
+        );
+
+      }
+    );
+
+  }
+  catch(error){
+
+    alert(
+      "Screen sharing cancel कर दी गई।"
+    );
+
+  }
+
+}
+
+
+showHistory();
+
+</script>
+
+</body>
+</html>
