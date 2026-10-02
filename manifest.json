@@ -1,0 +1,9 @@
+{
+  "name": "Fake Phone Demo",
+  "short_name": "Demo Wallet",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#fff8ff",
+  "theme_color": "#7135b7",
+  "description": "Virtual-money demonstration PWA"
+}
